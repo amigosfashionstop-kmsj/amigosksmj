@@ -1,20 +1,23 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyAdminToken, ADMIN_COOKIE_NAME } from './lib/admin-auth';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  if (path.startsWith('/admin') && !path.startsWith('/admin/login') && !path.startsWith('/api/')) {
-    const token = request.cookies.get('adminAuth')?.value;
-    if (token !== 'true') {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
-    }
-  }
+  if (path.startsWith('/admin')) {
+    const isLoginPage = path === '/admin/login';
+    const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+    const isAuthenticated = await verifyAdminToken(token);
 
-  if (path === '/admin/login') {
-    const token = request.cookies.get('adminAuth')?.value;
-    if (token === 'true') {
-      return NextResponse.redirect(new URL('/admin', request.url));
+    if (!isAuthenticated && !isLoginPage) {
+      const loginUrl = new URL('/admin/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    if (isAuthenticated && isLoginPage) {
+      const adminUrl = new URL('/admin', request.url);
+      return NextResponse.redirect(adminUrl);
     }
   }
 
@@ -22,5 +25,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin', '/admin/:path*'],
 };

@@ -8,13 +8,17 @@
     --foreground: 20 14% 4%;
   }
 
-  body {
-    @apply bg-stone-50/50 text-stone-900 antialiased selection:bg-brand-wine selection:text-white;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  *, *::before, *::after {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, Cambria, serif;
+  body {
+    @apply bg-stone-50/50 text-stone-900 antialiased selection:bg-brand-wine selection:text-white;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea, label, table, th, td {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 }
 

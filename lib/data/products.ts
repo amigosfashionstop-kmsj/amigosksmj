@@ -32,9 +32,7 @@ export interface Product {
   shippingInfo: string;
 }
 
-import fs from 'fs';
-import path from 'path';
-// ... interfaces
+
 
 export const PRODUCTS: Product[] = [
   {

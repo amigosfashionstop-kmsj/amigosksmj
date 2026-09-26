@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 import { updateOrderStatus } from '@/lib/db';
 
-export async function PATCH(request: Request, { params }: { params: { orderId: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ orderId: string }> }) {
   try {
-    // Next 15 awaits params
     const { orderId } = await params;
     const body = await request.json();
     

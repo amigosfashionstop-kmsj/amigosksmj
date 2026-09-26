@@ -3,17 +3,24 @@ import { getProducts, saveProducts } from '@/lib/db';
 import { PRODUCTS } from '@/lib/data/products';
 import { getDynamicCategories } from '@/lib/data/server-products';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   let list = getProducts();
-  if (!list) {
-    // Seed DB on first run
-    saveProducts(PRODUCTS);
+  if (!list || list.length === 0) {
     list = PRODUCTS;
   }
-  return NextResponse.json({
-    products: list,
-    categories: getDynamicCategories()
-  });
+  return NextResponse.json(
+    {
+      products: list,
+      categories: getDynamicCategories()
+    },
+    {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0'
+      }
+    }
+  );
 }
 
 export async function POST(request: Request) {
@@ -25,6 +32,6 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ success: false, error: 'Invalid products format' }, { status: 400 });
   } catch (error) {
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Failed to save products' }, { status: 500 });
   }
 }

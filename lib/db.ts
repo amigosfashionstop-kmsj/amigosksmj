@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { PRODUCTS } from './data/products';
 
 export interface BackendOrder {
   orderId: string;
@@ -17,29 +18,68 @@ const dataDir = path.join(process.cwd(), 'data');
 const ordersDbFile = path.join(dataDir, 'orders.json');
 const productsDbFile = path.join(dataDir, 'products.json');
 
-function ensureDb() {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  if (!fs.existsSync(ordersDbFile)) {
-    fs.writeFileSync(ordersDbFile, JSON.stringify([]));
+// Vercel serverless writable fallback directory
+const tmpDir = process.env.TMPDIR || '/tmp';
+const tmpOrdersDbFile = path.join(tmpDir, 'amigos_orders.json');
+const tmpProductsDbFile = path.join(tmpDir, 'amigos_products.json');
+
+let inMemoryProducts: any[] | null = null;
+let inMemoryOrders: BackendOrder[] | null = null;
+
+function safeWrite(primaryPath: string, fallbackPath: string, data: string): boolean {
+  try {
+    const dir = path.dirname(primaryPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(primaryPath, data);
+    return true;
+  } catch {
+    try {
+      fs.writeFileSync(fallbackPath, data);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 
-export function getOrders(): BackendOrder[] {
-  ensureDb();
+function safeRead(primaryPath: string, fallbackPath: string): string | null {
   try {
-    const data = fs.readFileSync(ordersDbFile, 'utf8');
-    return JSON.parse(data);
-  } catch (e) {
-    return [];
+    if (fs.existsSync(fallbackPath)) {
+      return fs.readFileSync(fallbackPath, 'utf8');
+    }
+  } catch {}
+
+  try {
+    if (fs.existsSync(primaryPath)) {
+      return fs.readFileSync(primaryPath, 'utf8');
+    }
+  } catch {}
+
+  return null;
+}
+
+export function getOrders(): BackendOrder[] {
+  if (inMemoryOrders) return inMemoryOrders;
+
+  const raw = safeRead(ordersDbFile, tmpOrdersDbFile);
+  if (raw) {
+    try {
+      inMemoryOrders = JSON.parse(raw);
+      return inMemoryOrders || [];
+    } catch (e) {
+      console.error('Failed to parse orders data', e);
+    }
   }
+  return [];
 }
 
 export function saveOrder(order: BackendOrder) {
   const orders = getOrders();
   orders.unshift(order);
-  fs.writeFileSync(ordersDbFile, JSON.stringify(orders, null, 2));
+  inMemoryOrders = orders;
+  safeWrite(ordersDbFile, tmpOrdersDbFile, JSON.stringify(orders, null, 2));
 }
 
 export function updateOrderStatus(orderId: string, status: string) {
@@ -47,27 +87,37 @@ export function updateOrderStatus(orderId: string, status: string) {
   const order = orders.find(o => o.orderId === orderId);
   if (order) {
     order.delivery.status = status;
-    fs.writeFileSync(ordersDbFile, JSON.stringify(orders, null, 2));
+    inMemoryOrders = orders;
+    safeWrite(ordersDbFile, tmpOrdersDbFile, JSON.stringify(orders, null, 2));
     return order;
   }
   return null;
 }
 
-export function getProducts() {
-  ensureDb();
-  if (fs.existsSync(productsDbFile)) {
+export function getProducts(): any[] {
+  if (inMemoryProducts && inMemoryProducts.length > 0) {
+    return inMemoryProducts;
+  }
+
+  const raw = safeRead(productsDbFile, tmpProductsDbFile);
+  if (raw) {
     try {
-      const data = fs.readFileSync(productsDbFile, 'utf8');
-      return JSON.parse(data);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        inMemoryProducts = parsed;
+        return inMemoryProducts;
+      }
     } catch (e) {
-      // fallback
+      console.error('Failed to parse products data', e);
     }
   }
-  // If not exists, return null so caller can seed it
-  return null;
+
+  // Fallback to static PRODUCTS
+  inMemoryProducts = PRODUCTS;
+  return inMemoryProducts;
 }
 
 export function saveProducts(products: any[]) {
-  ensureDb();
-  fs.writeFileSync(productsDbFile, JSON.stringify(products, null, 2));
+  inMemoryProducts = products;
+  safeWrite(productsDbFile, tmpProductsDbFile, JSON.stringify(products, null, 2));
 }
