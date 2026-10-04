@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PRODUCTS, CATEGORIES, Product } from '@/lib/data/products';
 import { ProductCard } from '@/components/ui/ProductCard';
