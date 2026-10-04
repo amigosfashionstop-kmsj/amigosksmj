@@ -1,0 +1,1676 @@
+export interface ProductVariant {
+  size: string;
+  stock: number;
+  price: number;
+}
+
+export interface Product {
+  id: string;
+  code: string;
+  sku: string;
+  name: string;
+  slug: string;
+  category: string;
+  categoryName: string;
+  mrp: number;
+  price: number;
+  salePrice: number;
+  fabric: string;
+  color: string;
+  sizes: string[];
+  stock: number;
+  isNewArrival: boolean;
+  isFeatured: boolean;
+  isClearance: boolean;
+  rating: number;
+  reviewsCount: number;
+  images: string[];
+  shortDescription: string;
+  description: string;
+  careInstructions: string;
+  fitDetails: string;
+  shippingInfo: string;
+}
+
+import fs from 'fs';
+import path from 'path';
+// ... interfaces
+
+export const PRODUCTS: Product[] = [
+  {
+    "id": "prod_001",
+    "code": "AFS 001 SET",
+    "sku": "AFS-001-SET",
+    "name": "AFS 001 SET Cotton SET in Lavender Pink",
+    "slug": "afs-001-set-cotton-set-lavender-pink",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 990,
+    "price": 890,
+    "salePrice": 890,
+    "fabric": "Pure Cotton",
+    "color": "Lavender Pink",
+    "sizes": [
+      "L"
+    ],
+    "stock": 12,
+    "isNewArrival": true,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 14,
+    "images": [
+      "/images/catalog/afs-001-main.jpg",
+      "/images/catalog/afs-001-hover.jpg",
+      "/images/catalog/afs-001-detail.jpg",
+      "/images/catalog/afs-001.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 001 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_002",
+    "code": "AFS 002 SET",
+    "sku": "AFS-002-SET",
+    "name": "AFS 002 SET Rayon SET in Bottle Green",
+    "slug": "afs-002-set-rayon-set-bottle-green",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1290,
+    "price": 1160,
+    "salePrice": 1160,
+    "fabric": "Rayon",
+    "color": "Bottle Green",
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "stock": 19,
+    "isNewArrival": true,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 15,
+    "images": [
+      "/images/catalog/afs-002-main.jpg",
+      "/images/catalog/afs-002-hover.jpg",
+      "/images/catalog/afs-002-detail.jpg",
+      "/images/catalog/afs-002.jpg"
+    ],
+    "shortDescription": "Elegant Rayon Rayon SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 002 SET Rayon SET. Specially crafted from premium Rayon, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_003",
+    "code": "AFS 003 SET",
+    "sku": "AFS-003-SET",
+    "name": "AFS 003 SET Rayon SET in Teal Blue",
+    "slug": "afs-003-set-rayon-set-teal-blue",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 990,
+    "price": 890,
+    "salePrice": 890,
+    "fabric": "Rayon",
+    "color": "Teal Blue",
+    "sizes": [
+      "L",
+      "XL"
+    ],
+    "stock": 26,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 16,
+    "images": [
+      "/images/catalog/afs-003-main.jpg",
+      "/images/catalog/afs-003-hover.jpg",
+      "/images/catalog/afs-003-detail.jpg",
+      "/images/catalog/afs-003.jpg"
+    ],
+    "shortDescription": "Elegant Rayon Rayon SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 003 SET Rayon SET. Specially crafted from premium Rayon, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_004",
+    "code": "AFS 004 KURTA",
+    "sku": "AFS-004-KURTA",
+    "name": "AFS 004 KURTA Cotton Kurta in Sunshine Yellow",
+    "slug": "afs-004-kurta-cotton-kurta-sunshine-yellow",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 690,
+    "price": 620,
+    "salePrice": 620,
+    "fabric": "Pure Cotton",
+    "color": "Sunshine Yellow",
+    "sizes": [
+      "L"
+    ],
+    "stock": 33,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 17,
+    "images": [
+      "/images/catalog/afs-004-main.jpg",
+      "/images/catalog/afs-004-hover.jpg",
+      "/images/catalog/afs-004-detail.jpg",
+      "/images/catalog/afs-004.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 004 KURTA Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_005",
+    "code": "AFS 005 KURTA",
+    "sku": "AFS-005-KURTA",
+    "name": "AFS 005 KURTA Cotton Kurta in Mint Green",
+    "slug": "afs-005-kurta-cotton-kurta-mint-green",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 590,
+    "price": 530,
+    "salePrice": 530,
+    "fabric": "Pure Cotton",
+    "color": "Mint Green",
+    "sizes": [
+      "M",
+      "XL"
+    ],
+    "stock": 15,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 18,
+    "images": [
+      "/images/catalog/afs-005-main.jpg",
+      "/images/catalog/afs-005-hover.jpg",
+      "/images/catalog/afs-005-detail.jpg",
+      "/images/catalog/afs-005.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 005 KURTA Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_006",
+    "code": "AFS 006 KURTA",
+    "sku": "AFS-006-KURTA",
+    "name": "AFS 006 KURTA Rayon Kurta in Floral White",
+    "slug": "afs-006-kurta-rayon-kurta-floral-white",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 530,
+    "price": 480,
+    "salePrice": 408,
+    "fabric": "Rayon",
+    "color": "Floral White",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 22,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 19,
+    "images": [
+      "/images/catalog/afs-006-main.jpg",
+      "/images/catalog/afs-006-hover.jpg",
+      "/images/catalog/afs-006-detail.jpg",
+      "/images/catalog/afs-006.jpg"
+    ],
+    "shortDescription": "Elegant Rayon Rayon Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 006 KURTA Rayon Kurta. Specially crafted from premium Rayon, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_007",
+    "code": "AFS 007 KURTA",
+    "sku": "AFS-007-KURTA",
+    "name": "AFS 007 KURTA Rayon Kurta in Crimson Red",
+    "slug": "afs-007-kurta-rayon-kurta-crimson-red",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 550,
+    "price": 500,
+    "salePrice": 500,
+    "fabric": "Rayon",
+    "color": "Crimson Red",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 29,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 20,
+    "images": [
+      "/images/catalog/afs-007-main.jpg",
+      "/images/catalog/afs-007-hover.jpg",
+      "/images/catalog/afs-007-detail.jpg",
+      "/images/catalog/afs-007.jpg"
+    ],
+    "shortDescription": "Elegant Rayon Rayon Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 007 KURTA Rayon Kurta. Specially crafted from premium Rayon, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_008",
+    "code": "AFS 008 KURTA",
+    "sku": "AFS-008-KURTA",
+    "name": "AFS 008 KURTA Rayon Kurta in Indigo White",
+    "slug": "afs-008-kurta-rayon-kurta-indigo-white",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 530,
+    "price": 480,
+    "salePrice": 408,
+    "fabric": "Rayon",
+    "color": "Indigo White",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 36,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 21,
+    "images": [
+      "/images/catalog/afs-008-main.jpg",
+      "/images/catalog/afs-008-hover.jpg",
+      "/images/catalog/afs-008-detail.jpg",
+      "/images/catalog/afs-008.jpg"
+    ],
+    "shortDescription": "Elegant Rayon Rayon Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 008 KURTA Rayon Kurta. Specially crafted from premium Rayon, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_009",
+    "code": "AFS 009 SET",
+    "sku": "AFS-009-SET",
+    "name": "AFS 009 SET Poly Silk SET in Coral Peach & Grey",
+    "slug": "afs-009-set-poly-silk-set-coral-peach-grey",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1779,
+    "price": 1600,
+    "salePrice": 1600,
+    "fabric": "Poly Silk",
+    "color": "Coral Peach & Grey",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 18,
+    "isNewArrival": false,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 22,
+    "images": [
+      "/images/catalog/afs-009-main.jpg",
+      "/images/catalog/afs-009-hover.jpg",
+      "/images/catalog/afs-009-detail.jpg",
+      "/images/catalog/afs-009.jpg"
+    ],
+    "shortDescription": "Elegant Poly Silk Poly Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 009 SET Poly Silk SET. Specially crafted from premium Poly Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_010",
+    "code": "AFS 010 SET",
+    "sku": "AFS-010-SET",
+    "name": "AFS 010 SET Poly Silk SET in Peacock Teal",
+    "slug": "afs-010-set-poly-silk-set-peacock-teal",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1799,
+    "price": 1620,
+    "salePrice": 1377,
+    "fabric": "Poly Silk",
+    "color": "Peacock Teal",
+    "sizes": [
+      "M"
+    ],
+    "stock": 25,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 23,
+    "images": [
+      "/images/catalog/afs-010-main.jpg",
+      "/images/catalog/afs-010-hover.jpg",
+      "/images/catalog/afs-010-detail.jpg",
+      "/images/catalog/afs-010.jpg"
+    ],
+    "shortDescription": "Elegant Poly Silk Poly Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 010 SET Poly Silk SET. Specially crafted from premium Poly Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_011",
+    "code": "AFS 011 KURTA",
+    "sku": "AFS-011-KURTA",
+    "name": "AFS 011 KURTA Cotton KURTA in Charcoal Ombre",
+    "slug": "afs-011-kurta-cotton-kurta-charcoal-ombre",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 919,
+    "price": 830,
+    "salePrice": 706,
+    "fabric": "Pure Cotton",
+    "color": "Charcoal Ombre",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 32,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 24,
+    "images": [
+      "/images/catalog/afs-011-main.jpg",
+      "/images/catalog/afs-011-hover.jpg",
+      "/images/catalog/afs-011-detail.jpg",
+      "/images/catalog/afs-011.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton KURTA featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 011 KURTA Cotton KURTA. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_012",
+    "code": "AFS 012 SET",
+    "sku": "AFS-012-SET",
+    "name": "AFS 012 SET Chanderi Silk SET in Seafoam Green",
+    "slug": "afs-012-set-chanderi-silk-set-seafoam-green",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1999,
+    "price": 1799,
+    "salePrice": 1799,
+    "fabric": "Chanderi Silk",
+    "color": "Seafoam Green",
+    "sizes": [
+      "M"
+    ],
+    "stock": 14,
+    "isNewArrival": false,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 25,
+    "images": [
+      "/images/catalog/afs-012-main.jpg",
+      "/images/catalog/afs-012-hover.jpg",
+      "/images/catalog/afs-012-detail.jpg",
+      "/images/catalog/afs-012.jpg"
+    ],
+    "shortDescription": "Elegant Chanderi Silk Chanderi Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 012 SET Chanderi Silk SET. Specially crafted from premium Chanderi Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_013",
+    "code": "AFS 013 SET",
+    "sku": "AFS-013-SET",
+    "name": "AFS 013 SET Cotton SET in Rose Dust Pink",
+    "slug": "afs-013-set-cotton-set-rose-dust-pink",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1899,
+    "price": 1710,
+    "salePrice": 1710,
+    "fabric": "Pure Cotton",
+    "color": "Rose Dust Pink",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 21,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 26,
+    "images": [
+      "/images/catalog/afs-013-main.jpg",
+      "/images/catalog/afs-013-hover.jpg",
+      "/images/catalog/afs-013-detail.jpg",
+      "/images/catalog/afs-013.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 013 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_014",
+    "code": "AFS 014 SET",
+    "sku": "AFS-014-SET",
+    "name": "AFS 014 SET Cotton SET in Marigold Yellow",
+    "slug": "afs-014-set-cotton-set-marigold-yellow",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1980,
+    "price": 1780,
+    "salePrice": 1780,
+    "fabric": "Pure Cotton",
+    "color": "Marigold Yellow",
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "stock": 28,
+    "isNewArrival": false,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 27,
+    "images": [
+      "/images/catalog/afs-014-main.jpg",
+      "/images/catalog/afs-014-hover.jpg",
+      "/images/catalog/afs-014-detail.jpg",
+      "/images/catalog/afs-014.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 014 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_015",
+    "code": "AFS 015 Kurta",
+    "sku": "AFS-015-Kurta",
+    "name": "AFS 015 Kurta Poly Crepe Kurta in Prussian Blue",
+    "slug": "afs-015-kurta-poly-crepe-kurta-prussian-blue",
+    "category": "short-kurtis",
+    "categoryName": "Short Kurtis",
+    "mrp": 498,
+    "price": 450,
+    "salePrice": 383,
+    "fabric": "Poly Crepe",
+    "color": "Prussian Blue",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 35,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 28,
+    "images": [
+      "/images/catalog/afs-015-main.jpg",
+      "/images/catalog/afs-015-hover.jpg",
+      "/images/catalog/afs-015-detail.jpg",
+      "/images/catalog/afs-015.jpg"
+    ],
+    "shortDescription": "Elegant Poly Crepe Poly Crepe Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 015 Kurta Poly Crepe Kurta. Specially crafted from premium Poly Crepe, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_016",
+    "code": "AFS 016 Kurta",
+    "sku": "AFS-016-Kurta",
+    "name": "AFS 016 Kurta Cotton Kurta in Maroon Gold",
+    "slug": "afs-016-kurta-cotton-kurta-maroon-gold",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 1459,
+    "price": 1299,
+    "salePrice": 1104,
+    "fabric": "Pure Cotton",
+    "color": "Maroon Gold",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 17,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 29,
+    "images": [
+      "/images/catalog/afs-016-main.jpg",
+      "/images/catalog/afs-016-hover.jpg",
+      "/images/catalog/afs-016-detail.jpg",
+      "/images/catalog/afs-016.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 016 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_017",
+    "code": "AFS 017 Kurta",
+    "sku": "AFS-017-Kurta",
+    "name": "AFS 017 Kurta Cotton Kurta in Fuchsia Pink",
+    "slug": "afs-017-kurta-cotton-kurta-fuchsia-pink",
+    "category": "short-kurtis",
+    "categoryName": "Short Kurtis",
+    "mrp": 550,
+    "price": 499,
+    "salePrice": 499,
+    "fabric": "Pure Cotton",
+    "color": "Fuchsia Pink",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 24,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 30,
+    "images": [
+      "/images/catalog/afs-017-main.jpg",
+      "/images/catalog/afs-017-hover.jpg",
+      "/images/catalog/afs-017-detail.jpg",
+      "/images/catalog/afs-017.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 017 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_018",
+    "code": "AFS 018 Kurta",
+    "sku": "AFS-018-Kurta",
+    "name": "AFS 018 Kurta Cotton Kurta in Royal Indigo",
+    "slug": "afs-018-kurta-cotton-kurta-royal-indigo",
+    "category": "short-kurtis",
+    "categoryName": "Short Kurtis",
+    "mrp": 550,
+    "price": 499,
+    "salePrice": 499,
+    "fabric": "Pure Cotton",
+    "color": "Royal Indigo",
+    "sizes": [
+      "L",
+      "XL"
+    ],
+    "stock": 31,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 31,
+    "images": [
+      "/images/catalog/afs-018-main.jpg",
+      "/images/catalog/afs-018-hover.jpg",
+      "/images/catalog/afs-018-detail.jpg",
+      "/images/catalog/afs-018.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 018 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_019",
+    "code": "AFS 019 Kurta",
+    "sku": "AFS-019-Kurta",
+    "name": "AFS 019 Kurta Cotton Kurta in Mustard Yellow",
+    "slug": "afs-019-kurta-cotton-kurta-mustard-yellow",
+    "category": "short-kurtis",
+    "categoryName": "Short Kurtis",
+    "mrp": 550,
+    "price": 499,
+    "salePrice": 499,
+    "fabric": "Pure Cotton",
+    "color": "Mustard Yellow",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 13,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 32,
+    "images": [
+      "/images/catalog/afs-019-main.jpg",
+      "/images/catalog/afs-019-hover.jpg",
+      "/images/catalog/afs-019-detail.jpg",
+      "/images/catalog/afs-019.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 019 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_020",
+    "code": "AFS 020 Kurta",
+    "sku": "AFS-020-Kurta",
+    "name": "AFS 020 Kurta Cotton Kurta in Coral Glow",
+    "slug": "afs-020-kurta-cotton-kurta-coral-glow",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 620,
+    "price": 559,
+    "salePrice": 559,
+    "fabric": "Pure Cotton",
+    "color": "Coral Glow",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 20,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 33,
+    "images": [
+      "/images/catalog/afs-020-main.jpg",
+      "/images/catalog/afs-020-hover.jpg",
+      "/images/catalog/afs-020-detail.jpg",
+      "/images/catalog/afs-020.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 020 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_021",
+    "code": "AFS 021 Kurta",
+    "sku": "AFS-021-Kurta",
+    "name": "AFS 021 Kurta Cotton Kurta in Tangerine Orange",
+    "slug": "afs-021-kurta-cotton-kurta-tangerine-orange",
+    "category": "short-kurtis",
+    "categoryName": "Short Kurtis",
+    "mrp": 550,
+    "price": 499,
+    "salePrice": 499,
+    "fabric": "Pure Cotton",
+    "color": "Tangerine Orange",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 27,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 34,
+    "images": [
+      "/images/catalog/afs-021-main.jpg",
+      "/images/catalog/afs-021-hover.jpg",
+      "/images/catalog/afs-021-detail.jpg",
+      "/images/catalog/afs-021.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 021 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_022",
+    "code": "AFS 022 Kurta",
+    "sku": "AFS-022-Kurta",
+    "name": "AFS 022 Kurta Cotton Kurta in Navy Anarkali",
+    "slug": "afs-022-kurta-cotton-kurta-navy-anarkali",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 880,
+    "price": 799,
+    "salePrice": 799,
+    "fabric": "Pure Cotton",
+    "color": "Navy Anarkali",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 34,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 35,
+    "images": [
+      "/images/catalog/afs-022-main.jpg",
+      "/images/catalog/afs-022-hover.jpg",
+      "/images/catalog/afs-022-detail.jpg",
+      "/images/catalog/afs-022.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 022 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_023",
+    "code": "AFS 023 Kurta",
+    "sku": "AFS-023-Kurta",
+    "name": "AFS 023 Kurta Cotton Kurta in Geometric Navy",
+    "slug": "afs-023-kurta-cotton-kurta-geometric-navy",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 738,
+    "price": 669,
+    "salePrice": 569,
+    "fabric": "Pure Cotton",
+    "color": "Geometric Navy",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 16,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 36,
+    "images": [
+      "/images/catalog/afs-023-main.jpg",
+      "/images/catalog/afs-023-hover.jpg",
+      "/images/catalog/afs-023-detail.jpg",
+      "/images/catalog/afs-023.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 023 Kurta Cotton Kurta. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_024",
+    "code": "AFS 024 Kurta",
+    "sku": "AFS-024-Kurta",
+    "name": "AFS 024 Kurta Crepe Kurta in Aqua Layered",
+    "slug": "afs-024-kurta-crepe-kurta-aqua-layered",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 778,
+    "price": 699,
+    "salePrice": 699,
+    "fabric": "Crepe",
+    "color": "Aqua Layered",
+    "sizes": [
+      "M"
+    ],
+    "stock": 23,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 14,
+    "images": [
+      "/images/catalog/afs-024-main.jpg",
+      "/images/catalog/afs-024-hover.jpg",
+      "/images/catalog/afs-024-detail.jpg",
+      "/images/catalog/afs-024.jpg"
+    ],
+    "shortDescription": "Elegant Crepe Crepe Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 024 Kurta Crepe Kurta. Specially crafted from premium Crepe, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_025",
+    "code": "AFS 025 Kurta",
+    "sku": "AFS-025-Kurta",
+    "name": "AFS 025 Kurta Dobby Chiffon Kurta in Noir Black",
+    "slug": "afs-025-kurta-dobby-chiffon-kurta-noir-black",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 1098,
+    "price": 999,
+    "salePrice": 999,
+    "fabric": "Dobby Chiffon",
+    "color": "Noir Black",
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "stock": 30,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 15,
+    "images": [
+      "/images/catalog/afs-025-main.jpg",
+      "/images/catalog/afs-025-hover.jpg",
+      "/images/catalog/afs-025-detail.jpg",
+      "/images/catalog/afs-025.jpg"
+    ],
+    "shortDescription": "Elegant Dobby Chiffon Dobby Chiffon Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 025 Kurta Dobby Chiffon Kurta. Specially crafted from premium Dobby Chiffon, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_026",
+    "code": "AFS 026 Kurta",
+    "sku": "AFS-026-Kurta",
+    "name": "AFS 026 Kurta Satin Kurta in Pink Floral Satin",
+    "slug": "afs-026-kurta-satin-kurta-pink-floral-satin",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 1218,
+    "price": 1099,
+    "salePrice": 934,
+    "fabric": "Satin",
+    "color": "Pink Floral Satin",
+    "sizes": [
+      "S",
+      "M",
+      "XL"
+    ],
+    "stock": 12,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 16,
+    "images": [
+      "/images/catalog/afs-026-main.jpg",
+      "/images/catalog/afs-026-hover.jpg",
+      "/images/catalog/afs-026-detail.jpg",
+      "/images/catalog/afs-026.jpg"
+    ],
+    "shortDescription": "Elegant Satin Satin Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 026 Kurta Satin Kurta. Specially crafted from premium Satin, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_027",
+    "code": "AFS 027 Kurta",
+    "sku": "AFS-027-Kurta",
+    "name": "AFS 027 Kurta Georgette Kurta in Blush Peach Anarkali",
+    "slug": "afs-027-kurta-georgette-kurta-blush-peach-anarkali",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 1078,
+    "price": 979,
+    "salePrice": 979,
+    "fabric": "Georgette",
+    "color": "Blush Peach Anarkali",
+    "sizes": [
+      "M",
+      "XL"
+    ],
+    "stock": 19,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 17,
+    "images": [
+      "/images/catalog/afs-027-main.jpg",
+      "/images/catalog/afs-027-hover.jpg",
+      "/images/catalog/afs-027-detail.jpg",
+      "/images/catalog/afs-027.jpg"
+    ],
+    "shortDescription": "Elegant Georgette Georgette Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 027 Kurta Georgette Kurta. Specially crafted from premium Georgette, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_028",
+    "code": "AFS 028 Kurta",
+    "sku": "AFS-028-Kurta",
+    "name": "AFS 028 Kurta Crepe Kurta in Crimson Bandhani",
+    "slug": "afs-028-kurta-crepe-kurta-crimson-bandhani",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 998,
+    "price": 899,
+    "salePrice": 764,
+    "fabric": "Crepe",
+    "color": "Crimson Bandhani",
+    "sizes": [
+      "L",
+      "XL"
+    ],
+    "stock": 26,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 18,
+    "images": [
+      "/images/catalog/afs-028-main.jpg",
+      "/images/catalog/afs-028-hover.jpg",
+      "/images/catalog/afs-028-detail.jpg",
+      "/images/catalog/afs-028.jpg"
+    ],
+    "shortDescription": "Elegant Crepe Crepe Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 028 Kurta Crepe Kurta. Specially crafted from premium Crepe, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_029",
+    "code": "AFS 029 Kurta",
+    "sku": "AFS-029-Kurta",
+    "name": "AFS 029 Kurta Crepe Kurta in Slate Blue Flared",
+    "slug": "afs-029-kurta-crepe-kurta-slate-blue-flared",
+    "category": "long-kurtis",
+    "categoryName": "Long Kurtis",
+    "mrp": 798,
+    "price": 719,
+    "salePrice": 611,
+    "fabric": "Crepe",
+    "color": "Slate Blue Flared",
+    "sizes": [
+      "M"
+    ],
+    "stock": 33,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 19,
+    "images": [
+      "/images/catalog/afs-029-main.jpg",
+      "/images/catalog/afs-029-hover.jpg",
+      "/images/catalog/afs-029-detail.jpg",
+      "/images/catalog/afs-029.jpg"
+    ],
+    "shortDescription": "Elegant Crepe Crepe Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 029 Kurta Crepe Kurta. Specially crafted from premium Crepe, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_030",
+    "code": "AFS 030 Kurta",
+    "sku": "AFS-030-Kurta",
+    "name": "AFS 030 Kurta Moss Kurta in Teal Striped",
+    "slug": "afs-030-kurta-moss-kurta-teal-striped",
+    "category": "short-kurtis",
+    "categoryName": "Short Kurtis",
+    "mrp": 538,
+    "price": 479,
+    "salePrice": 407,
+    "fabric": "Moss",
+    "color": "Teal Striped",
+    "sizes": [
+      "M"
+    ],
+    "stock": 15,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 20,
+    "images": [
+      "/images/catalog/afs-030-main.jpg",
+      "/images/catalog/afs-030-hover.jpg",
+      "/images/catalog/afs-030-detail.jpg",
+      "/images/catalog/afs-030.jpg"
+    ],
+    "shortDescription": "Elegant Moss Moss Kurta featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 030 Kurta Moss Kurta. Specially crafted from premium Moss, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_031",
+    "code": "AFS 031 SET",
+    "sku": "AFS-031-SET",
+    "name": "AFS 031 SET Poly Crepe SET in Royal Blue Palazzo",
+    "slug": "afs-031-set-poly-crepe-set-royal-blue-palazzo",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1458,
+    "price": 1299,
+    "salePrice": 1299,
+    "fabric": "Poly Crepe",
+    "color": "Royal Blue Palazzo",
+    "sizes": [
+      "M"
+    ],
+    "stock": 22,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 21,
+    "images": [
+      "/images/catalog/afs-031-main.jpg",
+      "/images/catalog/afs-031-hover.jpg",
+      "/images/catalog/afs-031-detail.jpg",
+      "/images/catalog/afs-031.jpg"
+    ],
+    "shortDescription": "Elegant Poly Crepe Poly Crepe SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 031 SET Poly Crepe SET. Specially crafted from premium Poly Crepe, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_032",
+    "code": "AFS 032 SET",
+    "sku": "AFS-032-SET",
+    "name": "AFS 032 SET Cotton SET in Ivory Floral Anarkali",
+    "slug": "afs-032-set-cotton-set-ivory-floral-anarkali",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 2458,
+    "price": 2199,
+    "salePrice": 2199,
+    "fabric": "Pure Cotton",
+    "color": "Ivory Floral Anarkali",
+    "sizes": [
+      "L"
+    ],
+    "stock": 29,
+    "isNewArrival": false,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 22,
+    "images": [
+      "/images/catalog/afs-032-main.jpg",
+      "/images/catalog/afs-032-hover.jpg",
+      "/images/catalog/afs-032-detail.jpg",
+      "/images/catalog/afs-032.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 032 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_033",
+    "code": "AFS 033 SET",
+    "sku": "AFS-033-SET",
+    "name": "AFS 033 SET Poly Silk SET in Ruby Red & Olive",
+    "slug": "afs-033-set-poly-silk-set-ruby-red-olive",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1218,
+    "price": 1099,
+    "salePrice": 1099,
+    "fabric": "Poly Silk",
+    "color": "Ruby Red & Olive",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 36,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 23,
+    "images": [
+      "/images/catalog/afs-033-main.jpg",
+      "/images/catalog/afs-033-hover.jpg",
+      "/images/catalog/afs-033-detail.jpg",
+      "/images/catalog/afs-033.jpg"
+    ],
+    "shortDescription": "Elegant Poly Silk Poly Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 033 SET Poly Silk SET. Specially crafted from premium Poly Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_034",
+    "code": "AFS 034 SET",
+    "sku": "AFS-034-SET",
+    "name": "AFS 034 SET Poly Silk SET in Sage Green Silk",
+    "slug": "afs-034-set-poly-silk-set-sage-green-silk",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1298,
+    "price": 1169,
+    "salePrice": 1169,
+    "fabric": "Poly Silk",
+    "color": "Sage Green Silk",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 18,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 24,
+    "images": [
+      "/images/catalog/afs-034-main.jpg",
+      "/images/catalog/afs-034-hover.jpg",
+      "/images/catalog/afs-034-detail.jpg",
+      "/images/catalog/afs-034.jpg"
+    ],
+    "shortDescription": "Elegant Poly Silk Poly Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 034 SET Poly Silk SET. Specially crafted from premium Poly Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_035",
+    "code": "AFS 035 SET",
+    "sku": "AFS-035-SET",
+    "name": "AFS 035 SET Cotton SET in Indigo Floral Pant",
+    "slug": "afs-035-set-cotton-set-indigo-floral-pant",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1838,
+    "price": 1659,
+    "salePrice": 1659,
+    "fabric": "Pure Cotton",
+    "color": "Indigo Floral Pant",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 25,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 25,
+    "images": [
+      "/images/catalog/afs-035-main.jpg",
+      "/images/catalog/afs-035-hover.jpg",
+      "/images/catalog/afs-035-detail.jpg",
+      "/images/catalog/afs-035.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 035 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_036",
+    "code": "AFS 036 SET",
+    "sku": "AFS-036-SET",
+    "name": "AFS 036 SET Cotton SET in Pastel Pink Dupatta",
+    "slug": "afs-036-set-cotton-set-pastel-pink-dupatta",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 2018,
+    "price": 1799,
+    "salePrice": 1799,
+    "fabric": "Pure Cotton",
+    "color": "Pastel Pink Dupatta",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 32,
+    "isNewArrival": false,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 26,
+    "images": [
+      "/images/catalog/afs-036-main.jpg",
+      "/images/catalog/afs-036-hover.jpg",
+      "/images/catalog/afs-036-detail.jpg",
+      "/images/catalog/afs-036.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 036 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_037",
+    "code": "AFS 037 SET",
+    "sku": "AFS-037-SET",
+    "name": "AFS 037 SET Georgette SET in Peacock Blue Sharara",
+    "slug": "afs-037-set-georgette-set-peacock-blue-sharara",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1918,
+    "price": 1899,
+    "salePrice": 1614,
+    "fabric": "Georgette",
+    "color": "Peacock Blue Sharara",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 14,
+    "isNewArrival": false,
+    "isFeatured": true,
+    "isClearance": true,
+    "rating": 4.8,
+    "reviewsCount": 27,
+    "images": [
+      "/images/catalog/afs-037-main.jpg",
+      "/images/catalog/afs-037-hover.jpg",
+      "/images/catalog/afs-037-detail.jpg",
+      "/images/catalog/afs-037.jpg"
+    ],
+    "shortDescription": "Elegant Georgette Georgette SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 037 SET Georgette SET. Specially crafted from premium Georgette, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_038",
+    "code": "AFS 038 SET",
+    "sku": "AFS-038-SET",
+    "name": "AFS 038 SET Poly Silk SET in Midnight Blue Crop Sharara",
+    "slug": "afs-038-set-poly-silk-set-midnight-blue-crop-sharara",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1758,
+    "price": 1590,
+    "salePrice": 1590,
+    "fabric": "Poly Silk",
+    "color": "Midnight Blue Crop Sharara",
+    "sizes": [
+      "M"
+    ],
+    "stock": 21,
+    "isNewArrival": false,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 28,
+    "images": [
+      "/images/catalog/afs-038-main.jpg",
+      "/images/catalog/afs-038-hover.jpg",
+      "/images/catalog/afs-038-detail.jpg",
+      "/images/catalog/afs-038.jpg"
+    ],
+    "shortDescription": "Elegant Poly Silk Poly Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 038 SET Poly Silk SET. Specially crafted from premium Poly Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_039",
+    "code": "AFS 039 SET",
+    "sku": "AFS-039-SET",
+    "name": "AFS 039 SET Poly Silk SET in Blush Pink Embroidered",
+    "slug": "afs-039-set-poly-silk-set-blush-pink-embroidered",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 2478,
+    "price": 2229,
+    "salePrice": 2229,
+    "fabric": "Poly Silk",
+    "color": "Blush Pink Embroidered",
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "stock": 28,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 29,
+    "images": [
+      "/images/catalog/afs-039-main.jpg",
+      "/images/catalog/afs-039-hover.jpg",
+      "/images/catalog/afs-039-detail.jpg",
+      "/images/catalog/afs-039.jpg"
+    ],
+    "shortDescription": "Elegant Poly Silk Poly Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 039 SET Poly Silk SET. Specially crafted from premium Poly Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_040",
+    "code": "AFS 040 SET",
+    "sku": "AFS-040-SET",
+    "name": "AFS 040 SET Chanderi Silk SET in Mint Frost Silk",
+    "slug": "afs-040-set-chanderi-silk-set-mint-frost-silk",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 2398,
+    "price": 2159,
+    "salePrice": 2159,
+    "fabric": "Chanderi Silk",
+    "color": "Mint Frost Silk",
+    "sizes": [
+      "M"
+    ],
+    "stock": 35,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 30,
+    "images": [
+      "/images/catalog/afs-040-main.jpg",
+      "/images/catalog/afs-040-hover.jpg",
+      "/images/catalog/afs-040-detail.jpg",
+      "/images/catalog/afs-040.jpg"
+    ],
+    "shortDescription": "Elegant Chanderi Silk Chanderi Silk SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 040 SET Chanderi Silk SET. Specially crafted from premium Chanderi Silk, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_041",
+    "code": "AFS 041 SET",
+    "sku": "AFS-041-SET",
+    "name": "AFS 041 SET Rayon SET in Emerald Festive Kurti",
+    "slug": "afs-041-set-rayon-set-emerald-festive-kurti",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1678,
+    "price": 1499,
+    "salePrice": 1499,
+    "fabric": "Rayon",
+    "color": "Emerald Festive Kurti",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 17,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 31,
+    "images": [
+      "/images/catalog/afs-041-main.jpg",
+      "/images/catalog/afs-041-hover.jpg",
+      "/images/catalog/afs-041-detail.jpg",
+      "/images/catalog/afs-041.jpg"
+    ],
+    "shortDescription": "Elegant Rayon Rayon SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 041 SET Rayon SET. Specially crafted from premium Rayon, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_042",
+    "code": "AFS 042 SET",
+    "sku": "AFS-042-SET",
+    "name": "AFS 042 SET Cotton SET in Multi Pastel Cotton",
+    "slug": "afs-042-set-cotton-set-multi-pastel-cotton",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 2338,
+    "price": 2099,
+    "salePrice": 2099,
+    "fabric": "Pure Cotton",
+    "color": "Multi Pastel Cotton",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 24,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 32,
+    "images": [
+      "/images/catalog/afs-042-main.jpg",
+      "/images/catalog/afs-042-hover.jpg",
+      "/images/catalog/afs-042-detail.jpg",
+      "/images/catalog/afs-042.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 042 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_043",
+    "code": "AFS 043 SET",
+    "sku": "AFS-043-SET",
+    "name": "AFS 043 SET Cotton SET in Sage Embroidered Kurti",
+    "slug": "afs-043-set-cotton-set-sage-embroidered-kurti",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1798,
+    "price": 1799,
+    "salePrice": 1799,
+    "fabric": "Pure Cotton",
+    "color": "Sage Embroidered Kurti",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "stock": 31,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 33,
+    "images": [
+      "/images/catalog/afs-043-main.jpg",
+      "/images/catalog/afs-043-hover.jpg",
+      "/images/catalog/afs-043-detail.jpg",
+      "/images/catalog/afs-043.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 043 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_044",
+    "code": "AFS 044 SET",
+    "sku": "AFS-044-SET",
+    "name": "AFS 044 SET Georgette Lehnga Choli SET in Sunset Coral Lehenga",
+    "slug": "afs-044-set-georgette-lehnga-choli-set-sunset-coral-lehenga",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1938,
+    "price": 1749,
+    "salePrice": 1749,
+    "fabric": "Georgette",
+    "color": "Sunset Coral Lehenga",
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "stock": 13,
+    "isNewArrival": true,
+    "isFeatured": true,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 34,
+    "images": [
+      "/images/catalog/afs-044-main.jpg",
+      "/images/catalog/afs-044-hover.jpg",
+      "/images/catalog/afs-044-detail.jpg",
+      "/images/catalog/afs-044.jpg"
+    ],
+    "shortDescription": "Elegant Georgette Georgette Lehnga Choli SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 044 SET Georgette Lehnga Choli SET. Specially crafted from premium Georgette, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  },
+  {
+    "id": "prod_045",
+    "code": "AFS 045 SET",
+    "sku": "AFS-045-SET",
+    "name": "AFS 045 SET Cotton SET in Ochre Yellow Angrakha",
+    "slug": "afs-045-set-cotton-set-ochre-yellow-angrakha",
+    "category": "kurti-sets",
+    "categoryName": "Kurti Sets",
+    "mrp": 1578,
+    "price": 1419,
+    "salePrice": 1419,
+    "fabric": "Pure Cotton",
+    "color": "Ochre Yellow Angrakha",
+    "sizes": [
+      "S",
+      "M",
+      "XL"
+    ],
+    "stock": 20,
+    "isNewArrival": true,
+    "isFeatured": false,
+    "isClearance": false,
+    "rating": 4.8,
+    "reviewsCount": 35,
+    "images": [
+      "/images/catalog/afs-045-main.jpg",
+      "/images/catalog/afs-045-hover.jpg",
+      "/images/catalog/afs-045-detail.jpg",
+      "/images/catalog/afs-045.jpg"
+    ],
+    "shortDescription": "Elegant Pure Cotton Cotton SET featuring authentic Indian artisan cuts, refined stitching, and breathable comfort for daily wear or celebrations.",
+    "description": "Embrace effortless elegance with the AFS 045 SET Cotton SET. Specially crafted from premium Pure Cotton, this style is designed to keep you cool, comfortable, and flawlessly styled from day to night. Featuring a flattering silhouette, precision neck detailing, and versatile pairing capability.",
+    "careInstructions": "Gentle hand wash or mild machine wash with like colors. Do not bleach. Dry in shade. Warm iron on reverse side.",
+    "fitDetails": "Regular comfortable Indian fit. We recommend ordering your true size. Refer to our size guide for bust and waist measurements.",
+    "shippingInfo": "Dispatched within 24-48 hours from our Titwala boutique. Free shipping across India on prepaid orders."
+  }
+];
+
+export const CATEGORIES = [
+  {
+    id: 'kurti-sets',
+    name: 'Kurti Sets',
+    slug: 'kurti-sets',
+    headline: 'Effortless Outfits, Beautifully Put Together',
+    description: 'Coordinated kurti pairs with pants, palazzos, shararas and dupattas crafted for celebrations and refined daily wear.',
+    image: '/images/catalog/afs-001-main.jpg',
+    count: PRODUCTS.filter(p => p.category === 'kurti-sets').length,
+  },
+  {
+    id: 'long-kurtis',
+    name: 'Long Kurtis',
+    slug: 'long-kurtis',
+    headline: 'Everyday Elegance with Easy Styling',
+    description: 'Graceful straight and A-line long kurtis designed for office wear, family gatherings, and everyday comfort.',
+    image: '/images/catalog/afs-004-main.jpg',
+    count: PRODUCTS.filter(p => p.category === 'long-kurtis').length,
+  },
+  {
+    id: 'short-kurtis',
+    name: 'Short Kurtis',
+    slug: 'short-kurtis',
+    headline: 'Easy-Going Styles for Everyday Dressing',
+    description: 'Chic, breezy short kurtis perfect for college, casual outings, denim pairings, and warm weather ease.',
+    image: '/images/catalog/afs-017-main.jpg',
+    count: PRODUCTS.filter(p => p.category === 'short-kurtis').length,
+  },
+  {
+    id: 'clearance',
+    name: 'Clearance Sale',
+    slug: 'clearance',
+    headline: 'Limited Pieces. Special Prices.',
+    description: 'Exclusive seasonal markdowns on our authentic cotton, rayon, and crepe pieces. Grab yours before stock runs out.',
+    image: '/images/catalog/afs-015-main.jpg',
+    count: PRODUCTS.filter(p => p.isClearance).length,
+  },
+];
+
+export function getProductBySlug(slug: string): Product | undefined {
+  return PRODUCTS.find(p => p.slug === slug || p.code.toLowerCase().replace(/\s+/g, '-') === slug || p.sku.toLowerCase() === slug.toLowerCase());
+}
+
+export function getProductsByCategory(categorySlug: string): Product[] {
+  if (categorySlug === 'clearance') {
+    return PRODUCTS.filter(p => p.isClearance);
+  }
+  return PRODUCTS.filter(p => p.category === categorySlug);
+}
+
+export function getFeaturedProducts(): Product[] {
+  return PRODUCTS.filter(p => p.isFeatured);
+}
+
+export function getNewArrivals(): Product[] {
+  return PRODUCTS.filter(p => p.isNewArrival);
+}
