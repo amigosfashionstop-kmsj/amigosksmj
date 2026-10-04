@@ -100,7 +100,7 @@ export default function AccountPage() {
                 <Package className="w-12 h-12 text-stone-300 mx-auto mb-3" />
                 <h3 className="font-serif text-lg font-bold text-brand-charcoal">No past orders yet</h3>
                 <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto mb-4">
-                  Browse our handcrafted kurti collection and place your first order with free delivery above ?799.
+                  Browse our handcrafted kurti collection and place your first order with free delivery above ₹799.
                 </p>
                 <Link
                   href="/shop"

@@ -5,7 +5,10 @@ import { ArrowUpRight } from 'lucide-react';
 import { getDynamicCategories } from '@/lib/data/server-products';
 
 export async function CollectionTiles() {
-  const CATEGORIES = await getDynamicCategories();
+  const allCategories = await getDynamicCategories();
+  // Filter out any category with zero styles as instructed by Task T2
+  const visibleCategories = allCategories.filter(cat => cat.count > 0).slice(0, 4);
+
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,7 +25,7 @@ export async function CollectionTiles() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {CATEGORIES.map(cat => (
+          {visibleCategories.map(cat => (
             <Link
               key={cat.id}
               href={`/shop/${cat.slug}`}
