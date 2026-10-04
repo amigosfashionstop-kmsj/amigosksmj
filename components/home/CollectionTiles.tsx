@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { getDynamicCategories } from '@/lib/data/server-products';
 
-export function CollectionTiles() {
-  const CATEGORIES = getDynamicCategories();
+export async function CollectionTiles() {
+  const CATEGORIES = await getDynamicCategories();
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

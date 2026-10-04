@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 import { getServerProducts, getDynamicCategories } from '@/lib/data/server-products';
 import { BLOG_POSTS } from '@/lib/data/blogs';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const PRODUCTS = getServerProducts();
-  const CATEGORIES = getDynamicCategories();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const PRODUCTS = await getServerProducts();
+  const CATEGORIES = await getDynamicCategories();
   const baseUrl = 'https://amigosfashionstop.com';
 
   const staticRoutes = [

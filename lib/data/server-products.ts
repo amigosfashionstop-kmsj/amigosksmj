@@ -1,39 +1,86 @@
-import { getProducts } from '../db';
-import { PRODUCTS, CATEGORIES, Product } from './products';
+import { supabase } from '../supabase';
+import { Product } from './products';
 
-export function getServerProducts(): Product[] {
-  const dbProducts = getProducts();
-  return dbProducts || PRODUCTS;
+export async function getServerProducts(): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, product_variants(size, stock)')
+    .order('created_at', { ascending: false });
+
+  if (error || !data) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+
+  // Map variants back to the expected product structure
+  return data.map(p => ({
+    id: p.id,
+    sku: p.sku || '',
+    code: p.code || '',
+    name: p.name,
+    slug: p.slug,
+    category: p.category,
+    subcategory: p.subcategory || '',
+    mrp: Number(p.mrp),
+    price: Number(p.price),
+    salePrice: p.sale_price ? Number(p.sale_price) : 0,
+    fabric: p.fabric || '',
+    color: p.color || '',
+    sizes: p.product_variants?.map((v: any) => v.size) || [],
+    stock: p.product_variants?.reduce((sum: number, v: any) => sum + (v.stock || 0), 0) || 0,
+    isNewArrival: p.is_new_arrival,
+    isFeatured: p.is_featured,
+    isClearance: p.is_clearance,
+    rating: Number(p.rating),
+    reviewsCount: p.reviews_count,
+    images: p.images || [],
+    shortDescription: p.short_description || '',
+    description: p.description || '',
+    careInstructions: p.care_instructions || ''
+  })) as Product[];
 }
 
-export function getProductBySlug(slug: string): Product | undefined {
-  return getServerProducts().find(p => 
+export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+  const products = await getServerProducts();
+  return products.find(p => 
     p.slug === slug || 
     (p.code && p.code.toLowerCase().replace(/\s+/g, '-') === slug) || 
     (p.sku && p.sku.toLowerCase() === slug.toLowerCase())
   );
 }
 
-export function getProductsByCategory(categorySlug: string): Product[] {
+export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
+  const products = await getServerProducts();
   if (categorySlug === 'clearance') {
-    return getServerProducts().filter(p => p.isClearance);
+    return products.filter(p => p.isClearance);
   }
-  return getServerProducts().filter(p => p.category === categorySlug);
+  return products.filter(p => p.category === categorySlug);
 }
 
-export function getFeaturedProducts(): Product[] {
-  return getServerProducts().filter(p => p.isFeatured);
+export async function getFeaturedProducts(): Promise<Product[]> {
+  const products = await getServerProducts();
+  return products.filter(p => p.isFeatured);
 }
 
-export function getNewArrivals(): Product[] {
-  return getServerProducts().filter(p => p.isNewArrival);
+export async function getNewArrivals(): Promise<Product[]> {
+  const products = await getServerProducts();
+  return products.filter(p => p.isNewArrival);
 }
 
-export function getDynamicCategories() {
+export async function getDynamicCategories() {
+  const products = await getServerProducts();
+  // Using static categories list for metadata, but dynamic counts
+  const CATEGORIES = [
+    { name: 'Sarees', slug: 'sarees' },
+    { name: 'Kurtis', slug: 'kurtis' },
+    { name: 'Lehengas', slug: 'lehengas' },
+    { name: 'Gowns', slug: 'gowns' },
+    { name: 'Clearance', slug: 'clearance' }
+  ];
   return CATEGORIES.map(cat => ({
     ...cat,
     count: cat.slug === 'clearance' 
-      ? getServerProducts().filter(p => p.isClearance).length 
-      : getServerProducts().filter(p => p.category === cat.slug).length
+      ? products.filter(p => p.isClearance).length 
+      : products.filter(p => p.category === cat.slug).length
   }));
 }

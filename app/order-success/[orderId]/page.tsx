@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,30 +15,25 @@ interface OrderSuccessProps {
 export default function OrderSuccessPage({ params }: OrderSuccessProps) {
   const { orderId } = use(params);
   const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const stored = sessionStorage.getItem('amigos_latest_order');
-      if (stored) {
-        setOrder(JSON.parse(stored));
-      } else {
-        const historyStr = localStorage.getItem('amigos_order_history_v1');
-        if (historyStr) {
-          const list = JSON.parse(historyStr);
-          const found = list.find((o: any) => o.orderId === orderId);
-          if (found) setOrder(found);
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
+    fetch(`/api/orders/${orderId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.order) setOrder(data.order);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, [orderId]);
+
+  if (loading) return <div className="min-h-[60vh] flex items-center justify-center">Loading order details...</div>;
 
   const whatsappMessage = `Hi Amigos Fashionstop! ??
 I just placed an order on your website:
 ?? *Order ID*: ${orderId}
-?? *Amount*: ?${order?.totals?.grandTotal || 'Confirmed'}
-?? *Customer*: ${order?.customer?.name || 'Amigos Shopper'}
+?? *Amount*: ?${order?.total_amount || 'Confirmed'}
+?? *Customer*: ${order?.customer_name || 'Amigos Shopper'}
 
 Please confirm dispatch updates. Thank you!`;
 
@@ -54,11 +49,11 @@ Please confirm dispatch updates. Thank you!`;
           </div>
 
           <span className="text-xs font-bold text-brand-wine tracking-widest uppercase bg-brand-wine/10 px-3 py-1 rounded-full">
-            Order Confirmed & Paid
+            Order Confirmed & Payment Under Verification
           </span>
 
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-brand-charcoal">
-            Thank you, {order?.customer?.name || 'Friend'}!
+            Thank you, {order?.customer_name?.split(' ')[0] || 'Friend'}!
           </h1>
 
           <p className="text-stone-600 text-sm max-w-md mx-auto">
@@ -97,28 +92,28 @@ Please confirm dispatch updates. Thank you!`;
               <p className="text-xs text-stone-400">Estimated Delivery</p>
               <p className="text-xs font-semibold text-emerald-700 flex items-center gap-1.5 mt-0.5">
                 <Truck className="w-4 h-4" />
-                <span>{order?.delivery?.estimatedTimeline || '2 � 3 Business Days'}</span>
+                <span>{order?.delivery?.estimatedTimeline || '2 ï¿½ 3 Business Days'}</span>
               </p>
             </div>
           </div>
 
           {/* Shipping Address & Contact Summary */}
-          {order?.customer && (
+          {order && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-stone-50 p-4 rounded-xl">
               <div>
                 <strong className="block text-stone-700 mb-1">Delivering To:</strong>
                 <p className="text-stone-600 leading-relaxed">
-                  {order.customer.name}<br />
-                  {order.customer.address1}, {order.customer.address2}<br />
-                  {order.customer.city}, {order.customer.state} - {order.customer.pincode}
+                  {order.customer_name}<br />
+                  {order.address}<br />
+                  {order.city}, {order.state} - {order.pincode}
                 </p>
               </div>
               <div>
                 <strong className="block text-stone-700 mb-1">Contact:</strong>
                 <p className="text-stone-600">
-                  Phone: {order.customer.phone}<br />
-                  {order.customer.email && <>Email: {order.customer.email}<br /></>}
-                  Payment Mode: {order?.payment?.method || 'Prepaid Razorpay'}
+                  Phone: {order.phone}<br />
+                  {order.email && <>Email: {order.email}<br /></>}
+                  Payment Mode: {order.payment_method}
                 </p>
               </div>
             </div>
@@ -130,71 +125,21 @@ Please confirm dispatch updates. Thank you!`;
               Items in this Shipment
             </h3>
             <div className="divide-y divide-stone-100">
-              {order?.items?.map((item: any) => (
+              {order?.order_items?.map((item: any) => (
                 <div key={item.id} className="py-3 flex items-center gap-4">
                   <div className="relative w-14 h-16 rounded overflow-hidden bg-stone-100 shrink-0 border border-stone-200">
-                    <Image
-                      src={item.product?.images?.[0] || '/images/brand/logo.png'}
-                      alt={item.product?.name || 'Product'}
-                      fill
-                      className="object-cover object-top"
-                    />
+                    <Package className="w-6 h-6 text-stone-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-brand-charcoal">{item.product?.name}</p>
-                    <p className="text-[11px] text-stone-500">
-                      Code: {item.product?.code} � Size: <strong>{item.size}</strong> � Quantity: {item.quantity}
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-brand-charcoal">{item.product_name}</p>
+                    <p className="text-[11px] text-stone-500 mt-0.5">
+                      {item.sku} â€¢ Size: <strong>{item.size}</strong> â€¢ Qty: {item.quantity}
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-brand-wine">
-                    {formatPrice(item.price * item.quantity)}
-                  </span>
+                  <p className="text-sm font-bold text-brand-wine shrink-0">
+                    {formatPrice(item.total_price)}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Total Row */}
-          {order?.totals && (
-            <div className="pt-4 border-t border-stone-200 space-y-1.5 text-xs text-stone-600">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>{formatPrice(order.totals.subtotal)}</span>
-              </div>
-              {order.totals.discount > 0 && (
-                <div className="flex justify-between text-emerald-700 font-medium">
-                  <span>Discount Applied ({order.totals.couponCode})</span>
-                  <span>-{formatPrice(order.totals.discount)}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>{order.totals.shippingFee === 0 ? 'FREE' : formatPrice(order.totals.shippingFee)}</span>
-              </div>
-              <div className="pt-2 border-t border-stone-200 flex justify-between text-base font-bold text-brand-charcoal">
-                <span>Total Paid</span>
-                <span className="text-brand-wine text-lg">{formatPrice(order.totals.grandTotal)}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Next Steps Buttons */}
-          <div className="pt-4 flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/shop"
-              className="flex-1 py-3 bg-brand-wine hover:bg-brand-wine-dark text-white rounded-md text-xs font-semibold text-center transition-colors flex items-center justify-center gap-2"
-            >
-              <span>Continue Shopping</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-
-            <Link
-              href="/account"
-              className="flex-1 py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-md text-xs font-semibold text-center transition-colors"
-            >
-              View in My Orders
-            </Link>
-          </div>
         </div>
       </div>
     </div>

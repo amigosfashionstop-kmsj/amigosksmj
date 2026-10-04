@@ -14,7 +14,8 @@ interface CategoryPageProps {
 
 export async function generateMetadata({ params }: CategoryPageProps) {
   const { category: categorySlug } = await params;
-  const category = getDynamicCategories().find(c => c.slug === categorySlug);
+  const categories = await getDynamicCategories();
+  const category = categories.find(c => c.slug === categorySlug);
   if (!category) return { title: 'Collection Not Found | Amigos Fashionstop' };
 
   return {
@@ -30,13 +31,14 @@ export async function generateMetadata({ params }: CategoryPageProps) {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category: categorySlug } = await params;
-  const category = getDynamicCategories().find(c => c.slug === categorySlug);
+  const categories = await getDynamicCategories();
+  const category = categories.find(c => c.slug === categorySlug);
 
   if (!category) {
     notFound();
   }
 
-  const products = getProductsByCategory(categorySlug);
+  const products = await getProductsByCategory(categorySlug);
 
   return (
     <div className="bg-[#FAF7F2] min-h-screen py-10">

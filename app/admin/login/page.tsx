@@ -10,13 +10,26 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === 'Admin' && password === 'admin') {
-      document.cookie = "adminAuth=true; path=/";
-      router.push('/admin');
-    } else {
-      setError('Invalid login credentials.');
+    setError('');
+    
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      
+      if (res.ok) {
+        // Force router refresh so middleware catches the new cookie
+        router.refresh();
+        router.push('/admin');
+      } else {
+        setError('Invalid login credentials.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
     }
   };
 

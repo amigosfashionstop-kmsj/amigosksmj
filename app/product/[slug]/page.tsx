@@ -16,7 +16,7 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) return { title: 'Product Not Found | Amigos Fashionstop' };
 
   return {
@@ -32,14 +32,15 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
   // Related products from same category, excluding current
-  const relatedProducts = getServerProducts().filter(
+  const allProducts = await getServerProducts();
+  const relatedProducts = allProducts.filter(
     p => p.category === product.category && p.id !== product.id
   ).slice(0, 4);
 

@@ -1,38 +1,54 @@
-import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAdminSupabase } from '@/lib/supabase';
+import { requireAdminAPI } from '@/lib/admin-auth';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Protect API
+  const isAdmin = await requireAdminAPI(request);
+  if (!isAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
+    const bucket = formData.get('bucket') as string || 'product-images'; // Default to products
 
     if (!file) {
-      return NextResponse.json({ error: 'No file received.' }, { status: 400 });
+      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    
+    // Generate unique filename
+    const ext = file.name.split('.').pop();
+    const filename = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
 
-    // Create the uploads directory if it doesn't exist
-    const uploadDir = join(process.cwd(), 'public/uploads');
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Ignore if directory exists
+    const supabase = getAdminSupabase();
+
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .upload(filename, buffer, {
+        contentType: file.type,
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Storage upload error:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Save the file
-    const uniqueFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
-    const path = join(uploadDir, uniqueFilename);
-    await writeFile(path, buffer);
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from(bucket)
+      .getPublicUrl(filename);
 
     return NextResponse.json({ 
       success: true, 
-      imageUrl: `/uploads/${uniqueFilename}` 
+      url: publicUrlData.publicUrl 
     });
-  } catch (error) {
-    console.error('Upload Error:', error);
-    return NextResponse.json({ error: 'Failed to upload image.' }, { status: 500 });
+  } catch (error: any) {
+    console.error('API Upload error:', error);
+    return NextResponse.json({ error: error.message || 'Failed to upload image' }, { status: 500 });
   }
 }

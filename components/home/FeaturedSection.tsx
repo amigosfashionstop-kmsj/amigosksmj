@@ -4,8 +4,8 @@ import { ArrowRight } from 'lucide-react';
 import { getNewArrivals, getFeaturedProducts } from '@/lib/data/server-products';
 import { ProductCard } from '@/components/ui/ProductCard';
 
-export function FeaturedSection() {
-  const newArrivals = getNewArrivals().slice(0, 8);
+export async function FeaturedSection() {
+  const newArrivals = (await getNewArrivals()).slice(0, 8);
 
   return (
     <section className="py-16 bg-[#FAF7F2]">
