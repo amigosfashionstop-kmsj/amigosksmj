@@ -1,8 +1,6 @@
-﻿'use client';
+'use client';
 import React, { useEffect, useState, use } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { CheckCircle, Truck, Package, MessageCircle, ArrowRight, Printer, Share2 } from 'lucide-react';
+import { CheckCircle, Truck, Package, MessageCircle, Printer } from 'lucide-react';
 import { STORE_INFO } from '@/lib/data/store-info';
 import { formatPrice } from '@/lib/utils';
 
@@ -29,11 +27,11 @@ export default function OrderSuccessPage({ params }: OrderSuccessProps) {
 
   if (loading) return <div className="min-h-[60vh] flex items-center justify-center">Loading order details...</div>;
 
-  const whatsappMessage = `Hi Amigos Fashionstop! ??
+  const whatsappMessage = `Hi Amigos Fashionstop! 🛍️
 I just placed an order on your website:
-?? *Order ID*: ${orderId}
-?? *Amount*: ?${order?.total_amount || 'Confirmed'}
-?? *Customer*: ${order?.customer_name || 'Amigos Shopper'}
+📦 *Order ID*: ${orderId}
+💰 *Amount*: ₹${order?.total_amount || 'Confirmed'}
+👤 *Customer*: ${order?.customer_name || 'Amigos Shopper'}
 
 Please confirm dispatch updates. Thank you!`;
 
@@ -92,7 +90,7 @@ Please confirm dispatch updates. Thank you!`;
               <p className="text-xs text-stone-400">Estimated Delivery</p>
               <p className="text-xs font-semibold text-emerald-700 flex items-center gap-1.5 mt-0.5">
                 <Truck className="w-4 h-4" />
-                <span>{order?.delivery?.estimatedTimeline || '2 ï¿½ 3 Business Days'}</span>
+                <span>{order?.delivery?.estimatedTimeline || '2 – 3 Business Days'}</span>
               </p>
             </div>
           </div>
@@ -133,13 +131,16 @@ Please confirm dispatch updates. Thank you!`;
                   <div className="flex-1">
                     <p className="text-xs font-semibold text-brand-charcoal">{item.product_name}</p>
                     <p className="text-[11px] text-stone-500 mt-0.5">
-                      {item.sku} â€¢ Size: <strong>{item.size}</strong> â€¢ Qty: {item.quantity}
+                      {item.sku} • Size: <strong>{item.size}</strong> • Qty: {item.quantity}
                     </p>
                   </div>
                   <p className="text-sm font-bold text-brand-wine shrink-0">
                     {formatPrice(item.total_price)}
                   </p>
                 </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
