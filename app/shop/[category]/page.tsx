@@ -6,6 +6,8 @@ import { getProductsByCategory, getDynamicCategories } from '@/lib/data/server-p
 import { ProductCard } from '@/components/ui/ProductCard';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 
+export const revalidate = 0;
+
 interface CategoryPageProps {
   params: Promise<{
     category: string;

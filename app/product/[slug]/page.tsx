@@ -8,6 +8,8 @@ import { getProductSchema } from '@/lib/services/seo';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
+export const revalidate = 0;
+
 interface ProductPageProps {
   params: Promise<{
     slug: string;

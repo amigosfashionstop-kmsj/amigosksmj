@@ -3,6 +3,8 @@ import { getAdminSupabase } from '@/lib/supabase';
 import { getDynamicCategories, getServerProducts } from '@/lib/data/server-products';
 import { requireAdminAPI } from '@/lib/admin-auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const list = await getServerProducts();
   return NextResponse.json({

@@ -34,7 +34,7 @@ export default function AdminDashboardPage() {
 
     fetch('/api/orders')
       .then(res => res.json())
-      .then(data => setOrders(data))
+      .then(data => setOrders(data.orders || []))
       .catch(console.error);
 
     const leadsStr = localStorage.getItem('amigos_wholesale_leads_v1');
