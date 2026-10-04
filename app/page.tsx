@@ -8,6 +8,8 @@ import { WhyShopAmigos } from '@/components/home/WhyShopAmigos';
 import { InstagramSection } from '@/components/home/InstagramSection';
 import { StoreBanner } from '@/components/home/StoreBanner';
 
+export const revalidate = 0;
+
 export default function HomePage() {
   return (
     <div>
