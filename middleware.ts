@@ -10,7 +10,9 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get('admin_session')?.value;
 
     if (!token) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      const redirectResponse = NextResponse.redirect(new URL('/admin/login', request.url));
+      redirectResponse.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      return redirectResponse;
     }
 
     try {
@@ -18,15 +20,26 @@ export async function middleware(request: NextRequest) {
         process.env.SUPABASE_SERVICE_ROLE_KEY || 'default-secret-key-change-in-production'
       );
       await jwtVerify(token, secret);
-      return NextResponse.next();
+      const response = NextResponse.next();
+      response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      return response;
     } catch (error) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      const redirectResponse = NextResponse.redirect(new URL('/admin/login', request.url));
+      redirectResponse.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      return redirectResponse;
     }
+  }
+
+  // Add noindex for /account
+  if (pathname.startsWith('/account')) {
+    const response = NextResponse.next();
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    return response;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/account/:path*'],
 };

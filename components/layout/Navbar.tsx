@@ -64,14 +64,11 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/admin" className="p-2 text-stone-700 hover:text-brand-wine bg-stone-100 rounded-full hover:bg-stone-200 transition-colors" title="Admin Portal">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            </Link>
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative w-12 h-12 md:w-14 md:h-14 shrink-0 transition-transform group-hover:scale-105">
                 <Image
                   src="/images/brand/logo.png"
-                  alt="Amigos Fashion Stop Logo Crest"
+                  alt="Amigos Fashionstop Logo Crest"
                   fill
                   className="object-contain"
                   priority
@@ -240,13 +237,6 @@ export function Navbar() {
                   className="block text-xs text-stone-600 hover:text-brand-wine"
                 >
                   Indian Ethnic Size Guide
-                </Link>
-                <Link
-                  href="/admin"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-xs text-stone-400 hover:text-stone-700"
-                >
-                  Admin CMS Portal
                 </Link>
               </div>
 

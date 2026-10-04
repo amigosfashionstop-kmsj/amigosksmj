@@ -15,7 +15,7 @@ export function Footer() {
               <div className="relative w-12 h-12 bg-white/10 rounded-full p-1 border border-white/20">
                 <Image
                   src="/images/brand/logo.png"
-                  alt="Amigos Fashion Stop Crest"
+                  alt="Amigos Fashionstop Crest"
                   fill
                   className="object-contain p-0.5 filter invert"
                 />
@@ -117,14 +117,12 @@ export function Footer() {
 
         {/* Bottom copyright */}
         <div className="pt-8 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between text-stone-500 text-[11px] gap-4">
-          <p>© {new Date().getFullYear()} Amigo&apos;s Fashion Stop. All rights reserved.</p>
+          <p>© 2026 Amigos Fashionstop. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              100% Verified Boutique Quality
+              Verified Boutique Quality
             </span>
-            <span>•</span>
-            <Link href="/admin" className="hover:text-stone-300">Admin Portal</Link>
           </div>
         </div>
       </div>
