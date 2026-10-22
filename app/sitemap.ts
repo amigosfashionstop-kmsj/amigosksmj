@@ -1,12 +1,9 @@
 import { MetadataRoute } from 'next';
-import { getServerProducts, getDynamicCategories } from '@/lib/data/server-products';
 import { BLOG_POSTS } from '@/lib/data/blogs';
+import { SITE_URL } from '@/lib/site';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const PRODUCTS = await getServerProducts();
-  const CATEGORIES = await getDynamicCategories();
-  const baseUrl = 'https://amigosfashionstop.com';
-
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = SITE_URL;
   const staticRoutes = [
     '',
     '/shop',
@@ -27,13 +24,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === '' ? 1.0 : 0.8,
   }));
 
-  const productRoutes = PRODUCTS.map(p => ({
-    url: `${baseUrl}/product/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.9,
-  }));
-
   const blogRoutes = BLOG_POSTS.map(b => ({
     url: `${baseUrl}/journal/${b.slug}`,
     lastModified: new Date(),
@@ -41,5 +31,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...productRoutes, ...blogRoutes];
+  return [...staticRoutes, ...blogRoutes];
 }

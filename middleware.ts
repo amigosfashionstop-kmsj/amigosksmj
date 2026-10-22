@@ -16,10 +16,11 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const secret = new TextEncoder().encode(
-        process.env.SUPABASE_SERVICE_ROLE_KEY || 'default-secret-key-change-in-production'
-      );
-      await jwtVerify(token, secret);
+      const secretValue = process.env.ADMIN_SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (!secretValue || secretValue.length < 32) throw new Error('Admin session secret is not configured');
+      const secret = new TextEncoder().encode(secretValue);
+      const { payload } = await jwtVerify(token, secret);
+      if (payload.role !== 'admin') throw new Error('Invalid admin session');
       const response = NextResponse.next();
       response.headers.set('X-Robots-Tag', 'noindex, nofollow');
       return response;

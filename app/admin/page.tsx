@@ -24,21 +24,33 @@ export default function AdminDashboardPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Partial<Product> | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState('');
+  const [loadError, setLoadError] = useState('');
 
   // Initial load
   useEffect(() => {
     fetch('/api/products')
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) throw new Error('Product catalog could not be loaded. Please refresh and try again.');
+        return res.json();
+      })
       .then(data => setProductsList(data.products || []))
-      .catch(console.error);
+      .catch(error => { setLoadError(error.message); console.error(error); });
 
     fetch('/api/orders')
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) throw new Error('Orders could not be loaded. Please refresh and try again.');
+        return res.json();
+      })
       .then(data => setOrders(data.orders || []))
-      .catch(console.error);
+      .catch(error => { setLoadError(error.message); console.error(error); });
 
-    const leadsStr = localStorage.getItem('amigos_wholesale_leads_v1');
-    if (leadsStr) setLeads(JSON.parse(leadsStr));
+    fetch('/api/wholesale')
+      .then(async response => {
+        if (!response.ok) throw new Error('Unable to load wholesale enquiries');
+        return response.json();
+      })
+      .then(data => setLeads(data.leads || []))
+      .catch(error => { setLoadError(error.message); console.error(error); });
   }, []);
 
   const showFeedback = (msg: string) => {
@@ -47,19 +59,24 @@ export default function AdminDashboardPage() {
   };
 
   const handleLogout = () => {
-    document.cookie = "adminAuth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    router.push('/admin/login');
+    fetch('/api/admin/logout', { method: 'POST' }).finally(() => router.push('/admin/login'));
   };
 
   const syncProductsToBackend = async (newList: Product[]) => {
     try {
-      await fetch('/api/products', {
+      const response = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ products: newList })
       });
+      if (!response.ok) throw new Error((await response.json()).error || 'Catalog save failed.');
+      setProductsList(newList);
+      setLoadError('');
+      return true;
     } catch (e) {
       console.error(e);
+      showFeedback(e instanceof Error ? e.message : 'Catalog save failed.');
+      return false;
     }
   };
 
@@ -88,7 +105,6 @@ export default function AdminDashboardPage() {
       showFeedback('Product updated successfully.');
     }
 
-    setProductsList(updatedList);
     setIsEditing(false);
     setEditingProduct(null);
     await syncProductsToBackend(updatedList);
@@ -97,7 +113,6 @@ export default function AdminDashboardPage() {
   const handleDeleteProduct = async (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
       const updatedList = productsList.filter(p => p.id !== id);
-      setProductsList(updatedList);
       showFeedback('Product deleted successfully.');
       await syncProductsToBackend(updatedList);
     }
@@ -107,7 +122,6 @@ export default function AdminDashboardPage() {
     if (selectedProductIds.size === 0) return;
     if (confirm(`Are you sure you want to delete ${selectedProductIds.size} selected products?`)) {
       const updatedList = productsList.filter(p => !selectedProductIds.has(p.id));
-      setProductsList(updatedList);
       showFeedback(`${selectedProductIds.size} products deleted successfully.`);
       setSelectedProductIds(new Set());
       await syncProductsToBackend(updatedList);
@@ -162,21 +176,24 @@ export default function AdminDashboardPage() {
 
   // --- Orders ---
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
-    const updated = orders.map(o =>
-      o.orderId === orderId ? { ...o, delivery: { ...o.delivery, status: newStatus } } : o
-    );
-    setOrders(updated);
-    
-    await fetch(`/api/orders/${orderId}`, {
+    const response = await fetch(`/api/orders/${orderId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify({ order_status: newStatus })
     });
+    if (!response.ok) {
+      showFeedback('Order status could not be saved.');
+      return;
+    }
+
+    setOrders(current => current.map(o =>
+      o.order_number === orderId ? { ...o, order_status: newStatus } : o
+    ));
     
-    const order = orders.find(o => o.orderId === orderId);
-    if (order && order.customer?.phone) {
-      const waMessage = `Hi ${order.customer.name}, your Amigos Fashionstop order #${order.orderId} status is now: ${newStatus}.`;
-      const waUrl = `https://wa.me/${order.customer.phone.replace(/\D/g, '')}?text=${encodeURIComponent(waMessage)}`;
+    const order = orders.find(o => o.order_number === orderId);
+    if (order?.phone) {
+      const waMessage = `Hi ${order.customer_name}, your Amigos Fashionstop order #${order.order_number} status is now: ${newStatus}.`;
+      const waUrl = `https://wa.me/${order.phone.replace(/\D/g, '')}?text=${encodeURIComponent(waMessage)}`;
       window.open(waUrl, '_blank');
     }
   };
@@ -191,7 +208,7 @@ export default function AdminDashboardPage() {
     return true;
   });
 
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.totals?.grandTotal || 0), 0);
+  const totalRevenue = orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
   const lowStockCount = productsList.filter(p => p.stock < 10).length;
   const outOfStockCount = productsList.filter(p => p.stock === 0).length;
 
@@ -234,6 +251,7 @@ export default function AdminDashboardPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {loadError && <div role="alert" className="mb-5 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">{loadError}</div>}
         {/* Navigation Tabs */}
         <div className="flex flex-wrap gap-2 mb-8">
           {[
@@ -541,13 +559,13 @@ export default function AdminDashboardPage() {
                 </thead>
                 <tbody className="divide-y divide-stone-100 text-stone-700">
                   {orders.map(o => (
-                    <tr key={o.orderId} className="hover:bg-stone-50">
-                      <td className="p-3 font-bold text-brand-wine">{o.orderId}</td>
-                      <td className="p-3">{o.customer?.name}</td>
-                      <td className="p-3">{o.items?.map((i: any) => i.product?.code).join(', ')}</td>
-                      <td className="p-3 font-bold">{formatPrice(o.totals?.grandTotal)}</td>
+                    <tr key={o.order_number} className="hover:bg-stone-50">
+                      <td className="p-3 font-bold text-brand-wine">{o.order_number}</td>
+                      <td className="p-3">{o.customer_name}</td>
+                      <td className="p-3">{o.order_items?.map((i: any) => i.sku || i.product_name).join(', ')}</td>
+                      <td className="p-3 font-bold">{formatPrice(Number(o.total_amount || 0))}</td>
                       <td className="p-3">
-                        <select value={o.delivery?.status || 'Processing'} onChange={e => handleUpdateOrderStatus(o.orderId, e.target.value)} className="px-2 py-1 border rounded bg-white text-xs">
+                        <select value={o.order_status || 'New'} onChange={e => handleUpdateOrderStatus(o.order_number, e.target.value)} className="px-2 py-1 border rounded bg-white text-xs">
                           <option value="New">New</option>
                           <option value="Processing">Processing</option>
                           <option value="Packed">Packed</option>
@@ -556,13 +574,36 @@ export default function AdminDashboardPage() {
                         </select>
                       </td>
                       <td className="p-3">
-                        <button onClick={() => handleUpdateOrderStatus(o.orderId, o.delivery?.status)} className="px-2 py-1 bg-emerald-500 text-white rounded text-[10px] font-bold">WhatsApp Alert</button>
+                        <button onClick={() => handleUpdateOrderStatus(o.order_number, o.order_status)} className="px-2 py-1 bg-emerald-500 text-white rounded text-[10px] font-bold">WhatsApp Alert</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'wholesale' && (
+          <div className="bg-white rounded-xl border border-stone-200 shadow-xs p-6 space-y-4">
+            <h2 className="font-serif text-xl font-bold text-brand-charcoal">Wholesale Enquiries</h2>
+            {leads.length === 0 ? <p className="text-sm text-stone-500">No saved wholesale enquiries yet.</p> : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {leads.map((lead: any) => (
+                  <article key={lead.id} className="rounded-lg border border-stone-200 bg-stone-50 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-semibold text-brand-charcoal">{lead.business_name}</h3>
+                      <span className="rounded bg-brand-wine/10 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-wine">{lead.status}</span>
+                    </div>
+                    <p className="mt-2 text-xs text-stone-600">{lead.name} · {lead.mobile}</p>
+                    <p className="text-xs text-stone-500">{lead.location || 'Location not provided'} · {lead.quantity ?? 'Quantity not specified'} pcs</p>
+                    {lead.email && <p className="text-xs text-stone-500">{lead.email}</p>}
+                    {lead.message && <p className="mt-2 text-xs text-stone-600">{lead.message}</p>}
+                    <p className="mt-2 text-[10px] text-stone-400">{new Date(lead.created_at).toLocaleString()}</p>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

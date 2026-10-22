@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getProductsByCategory, getDynamicCategories } from '@/lib/data/server-products';
+import { filterProductsByCategory, getDynamicCategories, getProductCatalogState, STORE_CATEGORIES } from '@/lib/data/server-products';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { ArrowLeft, Sparkles, ShoppingBag } from 'lucide-react';
 import { Metadata } from 'next';
@@ -18,8 +18,7 @@ interface CategoryPageProps {
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category: categorySlug } = await params;
-  const categories = await getDynamicCategories();
-  const category = categories.find(c => c.slug === categorySlug);
+  const category = STORE_CATEGORIES.find(c => c.slug === categorySlug);
   
   if (!category) {
     return {
@@ -28,13 +27,14 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     };
   }
 
-  const products = await getProductsByCategory(categorySlug);
+  const catalog = await getProductCatalogState();
+  const products = filterProductsByCategory(catalog.products, categorySlug);
   const isCategoryEmpty = products.length === 0;
 
   return {
     title: `${category.name} | Amigos Fashionstop - Titwala Ethnic Wear`,
     description: category.description,
-    robots: isCategoryEmpty ? { index: false, follow: true } : { index: true, follow: true },
+    robots: !catalog.available || isCategoryEmpty ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       title: `${category.name} | Amigos Fashionstop`,
       description: category.description,
@@ -52,14 +52,15 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category: categorySlug } = await params;
-  const categories = await getDynamicCategories();
+  const catalog = await getProductCatalogState();
+  const categories = await getDynamicCategories(catalog.products);
   const category = categories.find(c => c.slug === categorySlug);
 
   if (!category) {
     notFound();
   }
 
-  const products = await getProductsByCategory(categorySlug);
+  const products = filterProductsByCategory(catalog.products, categorySlug);
   const isCategoryEmpty = products.length === 0;
 
   return (
@@ -113,10 +114,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               <ShoppingBag className="w-8 h-8" />
             </div>
             <h2 className="font-serif text-2xl font-bold text-brand-charcoal">
-              New Styles Coming Soon
+              {catalog.available ? 'New Styles Coming Soon' : 'Our Collection Is Temporarily Unavailable'}
             </h2>
             <p className="text-sm text-stone-600 leading-relaxed">
-              We are currently restocking our curated {category.name.toLowerCase()} collection. Explore our live kurtis and sets in the meantime!
+              {catalog.available ? `We are currently restocking our curated ${category.name.toLowerCase()} collection. Explore our live kurtis and sets in the meantime!` : 'We cannot reach the live catalog right now. Please try again shortly or contact our boutique on WhatsApp.'}
             </p>
             <div className="pt-2">
               <Link

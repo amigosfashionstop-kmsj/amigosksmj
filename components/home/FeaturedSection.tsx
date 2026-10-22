@@ -1,11 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { getNewArrivals, getFeaturedProducts } from '@/lib/data/server-products';
+import { getNewArrivals, getProductCatalogState } from '@/lib/data/server-products';
 import { ProductCard } from '@/components/ui/ProductCard';
 
 export async function FeaturedSection() {
-  const newArrivals = (await getNewArrivals()).slice(0, 8);
+  const catalog = await getProductCatalogState();
+  const newArrivals = catalog.available ? (await getNewArrivals()).slice(0, 8) : [];
 
   return (
     <section className="py-16 bg-[#FAF7F2]">
@@ -32,11 +33,11 @@ export async function FeaturedSection() {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        {!catalog.available ? <p className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-900">Our live catalog is temporarily unavailable. Please check back shortly.</p> : <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {newArrivals.map((product, idx) => (
             <ProductCard key={product.id} product={product} priority={idx < 4} />
           ))}
-        </div>
+        </div>}
       </div>
     </section>
   );
