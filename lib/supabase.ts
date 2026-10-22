@@ -9,7 +9,9 @@ function getSupabaseConfig() {
   return { supabaseUrl, supabaseAnonKey };
 }
 
-let publicClient: ReturnType<typeof createClient> |  undefined;
+// Create the public client lazily so static build analysis does not require
+// runtime database configuration.
+let publicClient: ReturnType<typeof createClient> | undefined;
 function getPublicClient() {
   if (!publicClient) {
     const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig();
