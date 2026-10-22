@@ -20,7 +20,7 @@ function getPublicClient() {
   return publicClient;
 }
 
-export const supabase = new Prox({} as ReturnType<typeof createClient>, {
+export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
   get(_target, property) {
     const client = getPublicClient();
     const value = Reflect.get(client, property, client);
