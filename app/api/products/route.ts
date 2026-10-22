@@ -6,11 +6,12 @@ import { requireAdminAPI } from '@/lib/admin-auth';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const list = await getServerProducts();
-  return NextResponse.json({
-    products: list,
-    categories: await getDynamicCategories()
-  });
+  try {
+    const list = await getServerProducts();
+    return NextResponse.json({ products: list, categories: await getDynamicCategories(), available: true });
+  } catch {
+    return NextResponse.json({ error: 'Product catalog is temporarily unavailable', available: false }, { status: 503 });
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -22,10 +23,10 @@ export async function POST(request: NextRequest) {
     if (products && Array.isArray(products)) {
       const supabase = getAdminSupabase();
 
-      // For this migration, we will use an upsert strategy.
-      // But we have to map the JSON structure to our DB schema
+      const { data: existingProducts, error: existingError } = await supabase.from('products').select('id, sku');
+      if (existingError) throw existingError;
       const dbProducts = products.map(p => ({
-        id: p.id,
+        id: existingProducts?.find(row => row.id === p.id || row.sku === (p.sku || p.code))?.id,
         sku: p.sku || p.code || '',
         code: p.code || '',
         name: p.name,
@@ -50,26 +51,32 @@ export async function POST(request: NextRequest) {
         images: p.images || []
       }));
 
+      const productRows = dbProducts.filter(product => product.sku);
+      if (productRows.length !== dbProducts.length) return NextResponse.json({ success: false, error: 'Every product must have a SKU or code' }, { status: 400 });
       const { error: pError } = await supabase
         .from('products')
-        .upsert(dbProducts, { onConflict: 'id' });
+        .upsert(productRows, { onConflict: 'sku' });
 
       if (pError) throw pError;
 
       // Now map sizes/variants
       const dbVariants: any[] = [];
+      const { data: savedProducts, error: savedProductsError } = await supabase.from('products').select('id, sku');
+      if (savedProductsError) throw savedProductsError;
       products.forEach(p => {
+        const savedProduct = savedProducts?.find(row => row.id === p.id || row.sku === (p.sku || p.code));
+        if (!savedProduct) return;
         if (p.sizes && Array.isArray(p.sizes)) {
           p.sizes.forEach((size: string) => {
             dbVariants.push({
-              product_id: p.id,
+              product_id: savedProduct.id,
               size: size,
               stock: p.stock ? Math.floor(p.stock / p.sizes.length) : 0 // Fallback distribution if no exact size stock
             });
           });
         } else if (p.stock > 0) {
            dbVariants.push({
-              product_id: p.id,
+              product_id: savedProduct.id,
               size: 'Free Size',
               stock: p.stock
            });
