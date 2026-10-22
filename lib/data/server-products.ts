@@ -91,7 +91,7 @@ export const getServerProducts = cache(async (): Promise<Product[]> => {
 
   if (error || !data) {
     console.error('Error fetching products:', error);
-    throw new Error('Product catalog is temporarily unavailable.');
+    return [];
   }
 
   // Map variants back to the expected product structure
@@ -125,23 +125,6 @@ export const getServerProducts = cache(async (): Promise<Product[]> => {
   })) as Product[];
 });
 
-export async function getProductCatalogState() {
-  try {
-    const products = await getServerProducts();
-    return { products, available: true };
-  } catch {
-    return { products: [] as Product[], available: false };
-  }
-}
-
-export function filterProductsByCategory(products: Product[], categorySlug: string): Product[] {
-  const slug = categorySlug.toLowerCase();
-  if (slug === 'clearance') return products.filter(p => p.isClearance);
-  if (slug === 'kurtis') return products.filter(p => p.category === 'long-kurtis' || p.category === 'short-kurtis');
-  if (slug === 'lehengas') return products.filter(p => p.category === 'lehengas' || p.code.includes('044') || /lehenga/i.test(p.name));
-  return products.filter(p => p.category === slug);
-}
-
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   const products = await getServerProducts();
   const lower = slug.toLowerCase();
@@ -154,7 +137,27 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
 
 export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
   const products = await getServerProducts();
-  return filterProductsByCategory(products, categorySlug);
+  const slug = categorySlug.toLowerCase();
+
+  if (slug === 'clearance') {
+    return products.filter(p => p.isClearance);
+  }
+
+  // Mapping layer: Kurtis includes long and short
+  if (slug === 'kurtis') {
+    return products.filter(p => p.category === 'long-kurtis' || p.category === 'short-kurtis');
+  }
+
+  // Mapping layer: Lehengas matches AFS 044 or category lehengas
+  if (slug === 'lehengas') {
+    return products.filter(p => 
+      p.category === 'lehengas' || 
+      p.code.includes('044') || 
+      /lehenga/i.test(p.name)
+    );
+  }
+
+  return products.filter(p => p.category === slug);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
@@ -167,8 +170,8 @@ export async function getNewArrivals(): Promise<Product[]> {
   return products.filter(p => p.isNewArrival);
 }
 
-export async function getDynamicCategories(sourceProducts?: Product[]) {
-  const products = sourceProducts || await getServerProducts();
+export async function getDynamicCategories() {
+  const products = await getServerProducts();
 
   return STORE_CATEGORIES.map(cat => {
     let count = 0;

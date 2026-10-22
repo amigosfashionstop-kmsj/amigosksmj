@@ -2,11 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
-import { getDynamicCategories, getProductCatalogState } from '@/lib/data/server-products';
+import { getDynamicCategories } from '@/lib/data/server-products';
 
 export async function CollectionTiles() {
-  const catalog = await getProductCatalogState();
-  const allCategories = await getDynamicCategories(catalog.products);
+  const allCategories = await getDynamicCategories();
   // Filter out any category with zero styles as instructed by Task T2
   const visibleCategories = allCategories.filter(cat => cat.count > 0).slice(0, 4);
 
@@ -25,7 +24,7 @@ export async function CollectionTiles() {
           </p>
         </div>
 
-        {!catalog.available ? <p className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-900 sm:col-span-2 lg:col-span-4">Our live catalog is temporarily unavailable. Please check back shortly.</p> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {visibleCategories.map(cat => (
             <Link
               key={cat.id}
@@ -64,7 +63,7 @@ export async function CollectionTiles() {
               </div>
             </Link>
           ))}
-        </div>}
+        </div>
       </div>
     </section>
   );

@@ -14,22 +14,16 @@ function ShopContent() {
 
   const [productsData, setProductsData] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [catalogUnavailable, setCatalogUnavailable] = useState(false);
   
   useEffect(() => {
     fetch('/api/products')
-      .then(async res => {
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Catalog unavailable');
-        return data;
-      })
+      .then(res => res.json())
       .then(data => {
         setProductsData(data.products || []);
         setIsLoading(false);
       })
       .catch(err => {
         console.error(err);
-        setCatalogUnavailable(true);
         setIsLoading(false);
       });
   }, []);
@@ -338,11 +332,16 @@ function ShopContent() {
             {filteredProducts.length === 0 ? (
               <div className="bg-white rounded-xl border border-stone-200 p-12 text-center my-8">
                 <SlidersHorizontal className="w-10 h-10 text-stone-300 mx-auto mb-3" />
-                <h3 className="font-serif text-lg font-semibold text-brand-charcoal">{catalogUnavailable ? 'Our collection is temporarily unavailable' : 'No styles match these filters'}</h3>
+                <h3 className="font-serif text-lg font-semibold text-brand-charcoal">No styles match these filters</h3>
                 <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
-                  {catalogUnavailable ? 'We cannot reach the live catalog right now. Please try again shortly or contact our boutique on WhatsApp.' : 'Try adjusting your budget or fabric selections to view more pieces from our catalog.'}
+                  Try adjusting your budget or fabric selections to view more pieces from our catalog.
                 </p>
-                {catalogUnavailable ? <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 bg-brand-wine text-white text-xs font-semibold rounded-md shadow-xs">Try Again</button> : <button onClick={clearAllFilters} className="mt-4 px-4 py-2 bg-brand-wine text-white text-xs font-semibold rounded-md shadow-xs">Clear Filters</button>}
+                <button
+                  onClick={clearAllFilters}
+                  className="mt-4 px-4 py-2 bg-brand-wine text-white text-xs font-semibold rounded-md shadow-xs"
+                >
+                  Clear Filters
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">

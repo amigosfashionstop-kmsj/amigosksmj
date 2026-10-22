@@ -1,6 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { getProductCatalogState } from '@/lib/data/server-products';
+import { getProductBySlug, getServerProducts } from '@/lib/data/server-products';
 import { ProductGallery } from '@/components/product/ProductGallery';
 import { ProductActions } from '@/components/product/ProductActions';
 import { ProductCard } from '@/components/ui/ProductCard';
@@ -18,9 +18,8 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps) {
   const { slug } = await params;
-  const { products, available } = await getProductCatalogState();
-  const product = products.find(p => p.slug === slug || (p.code && p.code.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()) || (p.sku && p.sku.toLowerCase() === slug.toLowerCase()));
-  if (!product) return { title: 'Product Not Found | Amigos Fashionstop', robots: !available ? { index: false, follow: true } : undefined };
+  const product = await getProductBySlug(slug);
+  if (!product) return { title: 'Product Not Found | Amigos Fashionstop' };
 
   return {
     title: `${product.code} - ${product.name} | Amigos Fashionstop`,
@@ -35,14 +34,14 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const { products: allProducts } = await getProductCatalogState();
-  const product = allProducts.find(p => p.slug === slug || (p.code && p.code.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()) || (p.sku && p.sku.toLowerCase() === slug.toLowerCase()));
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
   // Related products from same category, excluding current
+  const allProducts = await getServerProducts();
   const relatedProducts = allProducts.filter(
     p => p.category === product.category && p.id !== product.id
   ).slice(0, 4);

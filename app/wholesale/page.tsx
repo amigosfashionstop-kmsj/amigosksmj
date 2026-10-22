@@ -17,27 +17,23 @@ export default function WholesalePage() {
   });
 
   const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
-    setSubmitError('');
     try {
-      const response = await fetch('/api/wholesale', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+      const leadsStr = localStorage.getItem('amigos_wholesale_leads_v1') || '[]';
+      const leads = JSON.parse(leadsStr);
+      leads.unshift({
+        id: 'lead_' + Date.now(),
+        date: new Date().toISOString(),
+        ...formData,
+        status: 'New'
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Unable to send enquiry. Please try again.');
-      setSubmitted(true);
+      localStorage.setItem('amigos_wholesale_leads_v1', JSON.stringify(leads));
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : 'Unable to send enquiry. Please try again.');
-    } finally {
-      setSubmitting(false);
+      console.error(err);
     }
+    setSubmitted(true);
   };
 
   const whatsappDirectUrl = generateWholesaleWhatsAppUrl(
@@ -174,8 +170,6 @@ export default function WholesalePage() {
                   Submit Wholesale Enquiry
                 </h3>
 
-                {submitError && <p role="alert" className="rounded-md border border-red-200 bg-red-50 p-3 text-red-700">{submitError}</p>}
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-medium text-stone-700 mb-1">
@@ -281,7 +275,7 @@ export default function WholesalePage() {
                   className="w-full py-3.5 bg-brand-wine hover:bg-brand-wine-dark text-white font-bold text-xs uppercase tracking-wider rounded-md shadow flex items-center justify-center gap-2 transition-all"
                 >
                   <Send className="w-4 h-4" />
-                  <span>{submitting ? 'Sending…' : 'Submit Wholesale Enquiry'}</span>
+                  <span>Submit Wholesale Enquiry</span>
                 </button>
               </form>
             )}

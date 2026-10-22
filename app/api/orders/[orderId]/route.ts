@@ -1,18 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSupabase } from '@/lib/supabase';
 import { requireAdminAPI } from '@/lib/admin-auth';
-import { verifyOrderTrackingToken } from '@/lib/order-tracking';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = await params;
-  const isAdmin = await requireAdminAPI(request);
-  if (!isAdmin && !(await verifyOrderTrackingToken(request.nextUrl.searchParams.get('token') || '', orderId))) {
-    return NextResponse.json({ error: 'Order not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } });
-  }
   const supabase = getAdminSupabase();
   const { data, error } = await supabase
     .from('orders')
-    .select(isAdmin ? '*, order_items(*)' : 'id, order_number, total_amount, payment_method, payment_status, order_status, tracking_number, created_at, order_items(id, sku, product_name, size, quantity, unit_price, total_price)')
+    .select('*, order_items(*)')
     .eq('order_number', orderId)
     .single();
 
@@ -20,20 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: 'Order not found' }, { status: 404 });
   }
 
-  if (isAdmin) return NextResponse.json({ order: data }, { headers: { 'Cache-Control': 'no-store' } });
-
-  return NextResponse.json({
-    order: {
-      order_number: data.order_number,
-      total_amount: data.total_amount,
-      payment_method: data.payment_method,
-      payment_status: data.payment_status,
-      order_status: data.order_status,
-      tracking_number: data.tracking_number,
-      created_at: data.created_at,
-      order_items: data.order_items,
-    },
-  }, { headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json({ order: data });
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {

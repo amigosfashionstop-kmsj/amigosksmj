@@ -3,7 +3,6 @@ import React, { useEffect, useState, use } from 'react';
 import { CheckCircle, Truck, Package, MessageCircle, Printer } from 'lucide-react';
 import { STORE_INFO } from '@/lib/data/store-info';
 import { formatPrice } from '@/lib/utils';
-import { useSearchParams } from 'next/navigation';
 
 interface OrderSuccessProps {
   params: Promise<{
@@ -13,24 +12,18 @@ interface OrderSuccessProps {
 
 export default function OrderSuccessPage({ params }: OrderSuccessProps) {
   const { orderId } = use(params);
-  const searchParams = useSearchParams();
-  const trackingToken = searchParams.get('token');
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!trackingToken) {
-      setLoading(false);
-      return;
-    }
-    fetch(`/api/orders/${orderId}?token=${encodeURIComponent(trackingToken)}`)
+    fetch(`/api/orders/${orderId}`)
       .then(res => res.json())
       .then(data => {
         if (data.order) setOrder(data.order);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [orderId, trackingToken]);
+  }, [orderId]);
 
   if (loading) return <div className="min-h-[60vh] flex items-center justify-center">Loading order details...</div>;
 
@@ -38,6 +31,8 @@ export default function OrderSuccessPage({ params }: OrderSuccessProps) {
 I just placed an order on your website:
 📦 *Order ID*: ${orderId}
 💰 *Amount*: ₹${order?.total_amount || 'Confirmed'}
+👤 *Customer*: ${order?.customer_name || 'Amigos Shopper'}
+
 Please confirm dispatch updates. Thank you!`;
 
   const whatsappShareUrl = `https://wa.me/${STORE_INFO.primaryWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`;
@@ -52,7 +47,7 @@ Please confirm dispatch updates. Thank you!`;
           </div>
 
           <span className="text-xs font-bold text-brand-wine tracking-widest uppercase bg-brand-wine/10 px-3 py-1 rounded-full">
-            {order ? 'Order Received & Payment Under Verification' : 'Order Reference'}
+            Order Confirmed & Payment Under Verification
           </span>
 
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-brand-charcoal">
@@ -60,7 +55,7 @@ Please confirm dispatch updates. Thank you!`;
           </h1>
 
           <p className="text-stone-600 text-sm max-w-md mx-auto">
-            {order ? <>Your ethnic wear order <strong className="text-brand-charcoal">#{orderId}</strong> has been received by our Titwala boutique team. We are preparing your parcel with love and boutique care.</> : <>Your order reference is <strong className="text-brand-charcoal">#{orderId}</strong>. For your privacy, order details are available from the secure link sent after checkout.</>}
+            Your ethnic wear order <strong className="text-brand-charcoal">#{orderId}</strong> has been received by our Titwala boutique team. We are preparing your parcel with love and boutique care.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">

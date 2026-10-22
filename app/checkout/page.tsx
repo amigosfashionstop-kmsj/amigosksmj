@@ -156,11 +156,11 @@ export default function CheckoutPage() {
         throw new Error('Failed to create order. Please contact support.');
       }
 
-      const { orderId, trackingToken } = await orderRes.json();
+      const { orderId } = await orderRes.json();
 
       // Clear cart & redirect
       clearCart();
-      router.push(`/order-success/${orderId}?token=${encodeURIComponent(trackingToken)}`);
+      router.push(`/order-success/${orderId}`);
 
     } catch (err: any) {
       setErrorMsg(err.message || 'Something went wrong.');
